@@ -32,32 +32,35 @@ def presegment_alphanum(s):
     return tokens
 
 @functools.cache
-def get_cybercan_dict():
+def get_cybercan_dict(ltr: bool = True):
     dict = pygtrie.CharTrie()
     with open("data/CyberCan.dict", "r") as f:
         for line in f:
             word, freq = line.rstrip().split(' ')
-            dict[word] = int(freq)
+            dict[word if ltr else word[::-1]] = int(freq)
     return dict
 
 
-def cybercan_seg(s: str):
+def cybercan_seg(s: str, ltr: bool = True):
     s = re.sub(r'(?<=[a-zA-Z0-9.]) (?=[a-zA-Z0-9.])', r'空', s)
     tokens = []
     preseg_tokens = presegment_alphanum(s)
+    preseg_tokens = preseg_tokens if ltr else preseg_tokens[::-1]
     for token in preseg_tokens:
         if re.match(r'^[a-zA-Z0-9-]+$', token) or token == " ":
             tokens.append(token)
         else:
+            token = token if ltr else token[::-1]
             while token:
-                p = get_cybercan_dict().longest_prefix(token)
+                p = get_cybercan_dict(ltr).longest_prefix(token)
                 if p:
                     n = len(p.key)
-                    tokens.append(token[:n])
+                    tokens.append(token[:n] if ltr else token[:n][::-1])
                     token = token[n:]
                 else:
                     tokens.append(token[0])
                     token = token[1:]
+    tokens = tokens if ltr else tokens[::-1]
     return tokens
 
 
@@ -103,7 +106,7 @@ def test_performance(gold_file):
         for line in tqdm(lines):
             json_line = json.loads(line)
             sent = "".join(json_line["words"]).replace("\u3000", " ") # replace full-width space with half-width space
-            pred_label = tokens_to_tags(cybercan_seg(sent))
+            pred_label = tokens_to_tags(cybercan_seg(sent, ltr=False))
             gold_label = json_line["ner"]
             if len(pred_label) != len(gold_label):
                 print(sent)
@@ -126,5 +129,10 @@ if __name__ == '__main__':
     # print(cybercan_seg("Shopping? 唔好啦，上年shop過一次，差啲過唔到年!"))
     # print(cybercan_seg("hea吓hea吓，唔好咁hea，hea咗成日"))
     # print(cybercan_seg("Wiki最頂果度可以揀香港繁體同台灣正體"))
+
+    # print(cybercan_seg("我今日去香港大學。", ltr=False))
+    # print(cybercan_seg("Shopping? 唔好啦，上年shop過一次，差啲過唔到年!", ltr=False))
+    # print(cybercan_seg("hea吓hea吓，唔好咁hea，hea咗成日", ltr=False))
+    # print(cybercan_seg("Wiki最頂果度可以揀香港繁體同台灣正體", ltr=False))
     test_performance("data/finetune_hkcancor.json")
     test_performance("data/finetune_cityu.json")

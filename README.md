@@ -33,8 +33,14 @@ Cantoseg
 === data/finetune_cityu.json performance ===
 {'_': {'precision': 0.8558331862318752, 'recall': 0.8223646621911156, 'f1': 0.8387651905869052, 'number': 1456208}, 'overall_precision': 0.8558331862318752, 'overall_recall': 0.8223646621911156, 'overall_f1': 0.8387651905869052, 'overall_accuracy': 0.9277729754643846}
 
-CyberCan
+CyberCan-LTR
 === data/finetune_hkcancor.json performance ===
 {'_': {'precision': 0.831404034182225, 'recall': 0.7625720816665801, 'f1': 0.7955018883262486, 'number': 153992}, 'overall_precision': 0.831404034182225, 'overall_recall': 0.7625720816665801, 'overall_f1': 0.7955018883262486, 'overall_accuracy': 0.8913639632044829}
 === data/finetune_cityu.json performance ===
 {'_': {'precision': 0.7963653549354226, 'recall': 0.8146315636227791, 'f1': 0.8053949040283223, 'number': 1456208}, 'overall_precision': 0.7963653549354226, 'overall_recall': 0.8146315636227791, 'overall_f1': 0.8053949040283223, 'overall_accuracy': 0.9042656745151905}
+
+CyberCan-RTL
+=== data/finetune_hkcancor.json performance ===
+{'_': {'precision': 0.8305877855570265, 'recall': 0.7619097095953037, 'f1': 0.7947678415991818, 'number': 153992}, 'overall_precision': 0.8305877855570265, 'overall_recall': 0.7619097095953037, 'overall_f1': 0.7947678415991818, 'overall_accuracy': 0.8908779846767995}
+=== data/finetune_cityu.json performance ===
+{'_': {'precision': 0.7997499199193082, 'recall': 0.8178268489116939, 'f1': 0.8086873767328697, 'number': 1456208}, 'overall_precision': 0.7997499199193082, 'overall_recall': 0.8178268489116939, 'overall_f1': 0.8086873767328697, 'overall_accuracy': 0.9067382881559977}
