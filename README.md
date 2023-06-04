@@ -1,26 +1,26 @@
-# finetune-ckip-transformers
-Create training files to fine-tune Hugging Face models to use with [CKIP Transformers](https://github.com/ckiplab/ckip-transformers). This is part of creating Hongkongese models using the same method.
-
-## Overview
-
-Hugging Face provides examples for [token classification](https://huggingface.co/docs/transformers/main/en/task_summary#token-classification). CKIP Transformers uses BI encoding to indicate word segmentation. For a sentence 點解 啊 ?, the line in the file looks like `{"words": ["點", "解", "啊", "?"], "ner": ["B", "I", "B", "B"]}`
-
-Fine-tuning with this training data creates a model that can be loaded and used by CKIP Transformers (for non-bert models, some code changes to use different tokenizers will be needed).
-
-## Instructions
-1. Install [PyCantonese](https://pycantonese.org/) to use the HKCanCor dataset
-2. Download training data from [The Second International Chinese Word Segmentation Bakeoff](http://sighan.cs.uchicago.edu/bakeoff2005/) and place cityu_training.utf8 and/or as_training.utf8 in /data
-3. Run finetune_hkcancor.py and finetune_cityu.py (uncomment some lines if as_training.utf8 is used). finetune_hkcancor.json and finetune_cityu.json will be created
-4. Merge/shuffle the created files if needed
-5. Install Hugging Face Transformers from [source](https://github.com/huggingface/transformers/)
-6. Go to transformers/examples/pytorch/token-classification/
-7. Run fine-tuning with the training file `python run_ner.py --model_name_or_path toastynews/electra-hongkongese-base-discriminator --train_file finetune_hkcancor.json --output_dir tn_electra_base_hkcancor --do_train`
-
-## Versions
-The following software versions were used.
-* pycantonese 3.4.0
+# Cantonese Word Segmentation Comparison
+We use the segeval library to calculate Precision, Recall, F1, and Accuracy of various Cantonese segmenters on the HKCanCor and CityU word segmentation corpora.
 
 ## Results
+### HKCanCor (16,162 sentences / 153,992 characters)
+|Segmenter   | Precision | Recall | F1    | Accuracy |
+|------------|-----------|--------|-------|----------|
+|Pycantonese | 93.04     | 87.48  | 90.18 |  94.77   |
+|Cantoseg    | 92.63     | 86.81  | 89.63 |  94.53   |
+|CyberCan-LTR| 83.14     | 76.26  | 79.55 |  89.14   |
+|CyberCan-RTL| 83.06     | 76.19  | 79.48 |  89.09   |
+
+### CityU (53,019 sentences / 1,456,208 characters)
+|Segmenter   | Precision | Recall | F1    | Accuracy |
+|------------|-----------|--------|-------|----------|
+|Pycantonese | 79.44     | 83.42  | 81.38 |  90.75   |
+|Cantoseg    | 85.58     | 82.24  | 83.88 |  92.78   |
+|CyberCan-LTR| 79.64     | 81.46  | 80.54 |  90.43   |
+|CyberCan-RTL| 79.97     | 81.78  | 80.87 |  90.67   |
+
+## Raw Results
+
+```
 Pycantonese
 === data/finetune_hkcancor.json performance ===
 {'_': {'precision': 0.930427875815865, 'recall': 0.8747986908410826, 'f1': 0.9017561592759819, 'number': 153992}, 'overall_precision': 0.930427875815865, 'overall_recall': 0.8747986908410826, 'overall_f1': 0.9017561592759819, 'overall_accuracy': 0.9476581289826684}
@@ -44,3 +44,4 @@ CyberCan-RTL
 {'_': {'precision': 0.8305877855570265, 'recall': 0.7619097095953037, 'f1': 0.7947678415991818, 'number': 153992}, 'overall_precision': 0.8305877855570265, 'overall_recall': 0.7619097095953037, 'overall_f1': 0.7947678415991818, 'overall_accuracy': 0.8908779846767995}
 === data/finetune_cityu.json performance ===
 {'_': {'precision': 0.7997499199193082, 'recall': 0.8178268489116939, 'f1': 0.8086873767328697, 'number': 1456208}, 'overall_precision': 0.7997499199193082, 'overall_recall': 0.8178268489116939, 'overall_f1': 0.8086873767328697, 'overall_accuracy': 0.9067382881559977}
+```
