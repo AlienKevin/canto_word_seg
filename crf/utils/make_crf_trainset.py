@@ -19,6 +19,6 @@ def character_tagging(input_file, output_file):
     output_data.close()
 
 if __name__ == '__main__':
-    percents = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    percents = [10, 20, 30, 40, 50, 60, 70, 80, 90]
     for percent in percents:
-        character_tagging(f"../../../data/hkcancor_{round(percent * 100)}.txt", f"../../data/hkcancor_{round(percent * 100)}_tagged.txt")
+        character_tagging(f"../../data/hkcancor_{percent}.txt", f"../data/hkcancor_{percent}_tagged.txt")

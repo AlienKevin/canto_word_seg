@@ -64,6 +64,17 @@ def cybercan_seg(s: str, ltr: bool = True):
     return tokens
 
 
+@functools.cache
+def load_crf_seg(percent):
+    from crf import crf
+    seg = crf.CrfSeg(f'crf/model/hkcancor_{percent}.model.txt')
+    return seg
+
+def crf_seg(s: str, percent):
+    seg = load_crf_seg(percent)
+    s = re.sub(r'(?<=[a-zA-Z0-9.]) (?=[a-zA-Z0-9.])', r'空', s)
+    return seg.seg(s)
+
 def diff_labels(pred_label, gold_label):
     if len(pred_label) != len(gold_label):
         raise ValueError("Sequences must have the same length")
@@ -94,7 +105,7 @@ def highlight_string_diff(string, diff_indices):
     return highlighted_string
 
 
-def test_performance(gold_file):
+def test_performance(gold_file, percent):
     metric = evaluate.load("seqeval")
 
     gold_labels = []
@@ -106,7 +117,7 @@ def test_performance(gold_file):
         for line in tqdm(lines):
             json_line = json.loads(line)
             sent = "".join(json_line["words"]).replace("\u3000", " ") # replace full-width space with half-width space
-            pred_label = tokens_to_tags(cybercan_seg(sent, ltr=False))
+            pred_label = tokens_to_tags(crf_seg(sent, percent))
             gold_label = json_line["ner"]
             if len(pred_label) != len(gold_label):
                 print(sent)
@@ -134,5 +145,9 @@ if __name__ == '__main__':
     # print(cybercan_seg("Shopping? 唔好啦，上年shop過一次，差啲過唔到年!", ltr=False))
     # print(cybercan_seg("hea吓hea吓，唔好咁hea，hea咗成日", ltr=False))
     # print(cybercan_seg("Wiki最頂果度可以揀香港繁體同台灣正體", ltr=False))
-    test_performance("data/finetune_hkcancor.json")
-    test_performance("data/finetune_cityu.json")
+    # test_performance("data/finetune_hkcancor.json")
+    # test_performance("data/finetune_cityu.json")
+
+    for percent in range(10, 100, 10):
+        print(f"=== CRF-HKCanCor-{percent}% ===")
+        test_performance("data/hkcancor_test.jsonl", percent=percent)

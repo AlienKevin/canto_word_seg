@@ -566,12 +566,20 @@ class LinearCRF(object):
                     self.index_feature[feature_id-1], self.weights[feature_id-1]))
         self.save()
 
+class CrfSeg(object):
+    def __init__(self, model_path='model/hkcancor_90.model.txt'):
+        self.model = LinearCRF()
+        self.model.load_crfpp_model(model_path)
 
 
+    def seg(self, sentence):
+        sentence.strip()
+        tags = self.model.inference_viterbi(sentence)
 
-
-
-
-
-
-
+        str_seg = ""
+        for word, tag in zip(sentence, tags):
+            str_seg += word
+            if tag == 'S' or tag == 'E':
+                str_seg += ' '
+        result = str_seg.split()
+        return result

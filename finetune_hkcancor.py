@@ -3,12 +3,8 @@ import random
 import re
 import pycantonese
 
-if __name__ == '__main__':
+def tag_hkcancor(tagged_sents):
     reg = re.compile(r'[a-zA-Z]')
-
-    # read corpus
-    hkcancor = pycantonese.hkcancor()
-    tagged_sents = hkcancor.tokens(by_utterances=True)
     examples = []
     for tagged_sent in tagged_sents:
         # create lines
@@ -40,6 +36,13 @@ if __name__ == '__main__':
             ners.extend(ner)       
             
         examples.append({"words":words, "ner": ners})
+    return examples
+
+if __name__ == '__main__':
+    # read corpus
+    hkcancor = pycantonese.hkcancor()
+    tagged_sents = hkcancor.tokens(by_utterances=True)
+    examples = tag_hkcancor(tagged_sents)
 
     random.shuffle(examples)
     with open('data/finetune_hkcancor.json', 'w') as train_outfile:
