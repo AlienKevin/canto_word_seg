@@ -21,6 +21,8 @@ We use the segeval library to calculate Precision, Recall, F1, and Accuracy of v
 ### CRF Segmenter on 10% randomly selected HKCanCor sentences
 CRF-xx% means that the CRF model is trained on xx% of HKCanCor sentences. All models are tested on 10% of randomly selected HKCanCor sentences outside of the training set.
 
+![CRF Segmenter Performance](crf_results.png)
+
 |Segmenter   | Precision | Recall | F1    | Accuracy |
 |------------|-----------|--------|-------|----------|
 |CRF-10%     | 89.91     | 90.17  | 90.04 |  94.11   |
